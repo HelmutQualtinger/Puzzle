@@ -129,11 +129,9 @@ def chooserWindow():
 
     #   create Tk Compatible big images and thumb nails
     cw = Tk()
-
     photoImages = [ImageTk.PhotoImage(img.resize((70, 70))) for img in images]
     PhotoImagesBig = [ImageTk.PhotoImage(img) for img in images]
     # create window
-
     divisions = IntVar()
     scale = Scale(cw, variable=divisions, from_=2, to=8, orient=HORIZONTAL, label="Difficulty")
     divisions.set(rows)
@@ -146,16 +144,11 @@ def chooserWindow():
     i = 0
     for img in photoImages:  # create Buttons for each available image
         b = Button(frame, text='', image=img, relief=RAISED,
-                   command=lambda arg1=cv, arg2=i, arg3=i: chooseImage(arg1, arg2, arg3))
+                   command=lambda arg1=cv, arg2=photoId, arg3=i: chooseImage(arg1, arg2, arg3))
         b.pack(side=TOP)
         i += 1
     cv.pack(side=TOP, anchor="ne")
-
     scale.pack(anchor=CENTER)
-
     # for each photo create the small tiles in with references in the tile dictionary
-
     cw.mainloop()
-
-
 chooserWindow()
