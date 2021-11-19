@@ -2,31 +2,56 @@ import os
 import time
 from tkinter import *
 from PIL import Image, ImageTk
-
+import random
 rows=4      # number of rows
 columns=4   # and columns of tiles
 
 
-def exchangeTile(clickedField, emptyField, photoid):
+def exchangeTile(clickedField, emptyField):
+    """
+    exchange two tilew
+    :param clickedField:   2-tuple with row and column of tile clicked
+    :param emptyField:        "                           empty tile
+    :return:   nothing
+    """
     global puzzleCv
-    (clickedRow,clickedColumn) = clickedField
-    (emptyRow,emptyColumn)     = emptyField
+    (clickedRow,clickedColumn) = clickedField   # extract column and row of source and destination field
+    (emptyRow,emptyColumn)  = emptyField
+    #   get the Tk Photo images
     emptyImage = puzzleCv.itemcget(str(emptyRow) + ":" + str(emptyColumn), "image")
     clickedImage = puzzleCv.itemcget(str(clickedRow) + ":" + str(clickedColumn), "image")
+    # write them back to the tiles
     puzzleCv.itemconfigure(str(emptyRow) + ":" + str(emptyColumn)   ,  image=clickedImage)
     puzzleCv.itemconfigure(str(clickedRow) + ":" + str(clickedColumn), image=emptyImage)
 
-def clickTile(e,clickedField, photoid):
+def clickTile(e,clickedField):
+    """
+    Call back when tile is clicked
+    :param e:    Tk event - position
+    :param clickedField:   2-tuple with row and column at which the user clicked
+    :return:
+    """
     global emptyField, puzzleCv
     (er,ec)=emptyField
     (cr,cc)= clickedField
-    print (abs(er-cr), abs(ec-er))
+    # check wheter click was next to empty click
     if  abs(er-cr) + abs(ec-cc) == 1:
-            exchangeTile(clickedField, emptyField,photoid)
+    # exchange the photo tiles
+            exchangeTile(clickedField, emptyField)
             emptyField=clickedField
+
+def shufflePuzzle():
+    """ shuffle the board randomly """
+    for i in range(10000):
+        row=random.randint(0,rows-1)
+        col=random.randint(0,columns-1)
+        Field=(row,col)
+        clickTile(None,Field)
 
 def createPuzzleWindow (master,photoid):
     """ Create the window where the puzzle is played
+        master is window of parent
+        photois is index pf present photo
     """
     global PhotoImagesBig, images, puzzlew, puzzleCv,photoImages, tiles, emptyField
     emptyField = (rows-1,columns-1)
@@ -40,17 +65,19 @@ def createPuzzleWindow (master,photoid):
     puzzlew.title("Puzzle")
     puzzleCv= Canvas(puzzlew,width=420,height=420, bg="white")  # create a canvas for the tiles
     width, height = images[photoid].size
-    width //= (columns)
+    width //= (columns) # width and height of single tile
     height //= (rows)
 
     for row in range(rows):
         for col in range(columns):
             imgg = tiles[(photoid,row,col)]
-            id = puzzleCv.create_image(row * (height + 2), col * (width + 2),image=imgg,anchor="nw")
+            id = puzzleCv.create_image(row * (height + 1), col * (width + 1),image=imgg,anchor="nw")
             puzzleCv.tag_bind(id,"<ButtonPress-1>",
-                    lambda e, arg2=(row,col),arg3=photoid: clickTile(e,arg2,arg3))
-            puzzleCv.itemconfigure(id, tag=str(row)+":"+str(col))
+                    lambda e, arg2=(row,col): clickTile(e,arg2))
+            puzzleCv.itemconfigure(id, tag=str(row)+":"+str(col))  # tag to be used to access image
+
     puzzleCv.pack()
+    Button(puzzlew,text="shuffle", command=shufflePuzzle).pack()
 
 def chooseImage(cv, photoid,counter):
     """"
