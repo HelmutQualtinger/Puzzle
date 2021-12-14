@@ -1,3 +1,4 @@
+import numpy
 import os
 import time
 from tkinter import *
@@ -10,7 +11,7 @@ columns = 4  # and columns of tiles
 
 def exchangeTile(clickedField, emptyField):
     """
-    exchange two tilew
+    exchange two tiles
     :param clickedField:   2-tuple with row and column of tile clicked
     :param emptyField:        "                           empty tile
     :return:   nothing
@@ -41,17 +42,25 @@ def clickTile(e, clickedField):
         # exchange the photo tiles
         exchangeTile(clickedField, emptyField)
         emptyField = clickedField
-    """
+
     elif er == cr:
         pass
-        while ec > cc:
-            exchangeTile((er, ec), (cr, cc))
-            ec -= 1
         while ec < cc:
-            exchangeTile((er, ec), (cr, cc))
-            ec += 1
+            exchangeTile((cr, ec+1), (er, ec))
+            ec+=1
+        while ec > cc:
+            exchangeTile((cr, ec-1), (er, ec))
+            ec -= 1
         emptyField = (cr, cc)
-    """
+    elif ec==cc:
+        while er < cr:
+            exchangeTile((er+1, ec), (er, ec))
+            er += 1
+        while er > cr:
+            exchangeTile((er-1, ec), (er, ec))
+            er -= 1
+        emptyField = (cr, cc)
+
 
 def shufflePuzzle():
     """ shuffle the board randomly """
@@ -129,7 +138,7 @@ def chooserWindow():
 
     #   create Tk Compatible big images and thumb nails
     cw = Tk()
-    photoImages = [ImageTk.PhotoImage(img.resize((70, 70))) for img in images]
+    photoImages = [ImageTk.PhotoImage(img.resize((100, 100))) for img in images]
     PhotoImagesBig = [ImageTk.PhotoImage(img) for img in images]
     # create window
     divisions = IntVar()

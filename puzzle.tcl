@@ -35,7 +35,7 @@ proc SpielfeldZeichnen {} {
     pack .spielfeld
 # hole das gesamte Bild
 #    image create photo PuzzleAll -file maria.png -width $groesse -height $groesse
-# Verkleinere es für die Vorlagenvorschau
+# Verkleinere es f?r die Vorlagenvorschau
     image create photo PuzzleSmall
     PuzzleSmall copy PuzzleAll -subsample 2
     catch { destroy .vorlage }
@@ -88,7 +88,7 @@ proc Klick { spalte zeile } {
     global leeresFeld
 #    puts "Klickt in $spalte $zeile"
     tauscheFelder  PuzzleTeil:$spalte:$zeile $leeresFeld
-# Das frühere Feld ist jetzt leer
+# Das fr?here Feld ist jetzt leer
     set leeresFeld PuzzleTeil:$spalte:$zeile
 }
 proc geschuetzterKlick { spalte zeile } {
@@ -97,7 +97,7 @@ proc geschuetzterKlick { spalte zeile } {
     set liste [ split $leeresFeld ":" ] ;  # Feldname hat die Form MariaTeil:$spalte:$zeile
     set leereSpalte  [ lindex $liste 1 ] ; # hol die Spalte und Zeile des leeren Feldes
     set leereZeile   [ lindex $liste 2 ]
-#  Überprüfe, ob das Feld direkt neben dem leeren ist
+#  ?berpr?fe, ob das Feld direkt neben dem leeren ist
     set differenz [ expr abs($spalte-$leereSpalte)+abs($zeile-$leereZeile) ]
     if { $differenz == 1 } {
 	# Wenn ja vertausche die beiden
